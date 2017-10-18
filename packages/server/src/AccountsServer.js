@@ -285,11 +285,11 @@ export class AccountsServer {
         );
       }
 
-      if (user.username && await this.db.findUserByUsername(user.username)) {
+      if (user.username && (await this.findUserByUsername(user.username))) {
         throw new AccountsError('Username already exists', { username: user.username });
       }
 
-      if (user.email && await this.db.findUserByEmail(user.email)) {
+      if (user.email && (await this.findUserByEmail(user.email))) {
         throw new AccountsError('Email already exists', { email: user.email });
       }
 
@@ -360,7 +360,7 @@ export class AccountsServer {
         throw new AccountsError('User not found');
       }
 
-      const impersonatedUser = await this.db.findUserByUsername(username);
+      const impersonatedUser = await this.findUserByUsername(username);
       if (!impersonatedUser) {
         throw new AccountsError(`User ${username} not found`);
       }
@@ -720,7 +720,7 @@ export class AccountsServer {
    * @returns {Promise<void>} - Return a Promise.
    */
   async sendVerificationEmail(address: string): Promise<void> {
-    const user = await this.db.findUserByEmail(address);
+    const user = await this.findUserByEmail(address);
     if (!user) {
       throw new AccountsError('User not found', { email: address });
     }
@@ -757,7 +757,7 @@ export class AccountsServer {
    * @returns {Promise<void>} - Return a Promise.
    */
   async sendResetPasswordEmail(address: string): Promise<void> {
-    const user = await this.db.findUserByEmail(address);
+    const user = await this.findUserByEmail(address);
     if (!user) {
       throw new AccountsError('User not found', { email: address });
     }
@@ -785,7 +785,7 @@ export class AccountsServer {
    * @returns {Promise<void>} - Return a Promise.
    */
   async sendEnrollmentEmail(address: string): Promise<void> {
-    const user = await this.db.findUserByEmail(address);
+    const user = await this.findUserByEmail(address);
     if (!user) {
       throw new AccountsError('User not found', { email: address });
     }
